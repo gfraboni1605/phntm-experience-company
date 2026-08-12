@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Header } from "@/components/Header";
 import { MobileNav } from "@/components/MobileNav";
 import { Footer } from "@/components/Footer";
@@ -15,6 +16,28 @@ const HOME_FEATURED_SLUGS = [
   "renegade",
   "mode-festival",
 ];
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "PHNTM — An Experience Company",
+  },
+  description:
+    "PHNTM designs, builds, and runs the biggest live moments in entertainment across Moments, Platforms, and Venues.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "PHNTM — An Experience Company",
+    description:
+      "PHNTM designs, builds, and runs the biggest live moments in entertainment.",
+    url: "/",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PHNTM — An Experience Company",
+    description:
+      "PHNTM designs, builds, and runs the biggest live moments in entertainment.",
+  },
+};
 
 export default function HomePage() {
   const featured = HOME_FEATURED_SLUGS.map(
@@ -86,7 +109,7 @@ export default function HomePage() {
               <span className="nm">
                 <Link
                   className="scalerow__link"
-                  href="/work?scale=moments"
+                  href="/moments"
                   aria-label="See Moments work"
                 >
                   Moments
@@ -97,11 +120,11 @@ export default function HomePage() {
                 build, and run it end to end, with no second take.
               </span>
               <span className="ex">
-                <Link href="/work/coca-cola-y3000-sphere">Coca-Cola Y3000</Link>
+                <Link href="/moments/coca-cola-y3000-sphere">Coca-Cola Y3000</Link>
                 <br />
-                <Link href="/work/cartier-met-gala">Cartier · Met Gala</Link>
+                <Link href="/moments/cartier-met-gala">Cartier · Met Gala</Link>
                 <br />
-                <Link href="/work/donda-2">Donda 2</Link>
+                <Link href="/moments/donda-2">Donda 2</Link>
               </span>
             </div>
             <div className="scalerow scalerow--link" data-reveal>
@@ -109,7 +132,7 @@ export default function HomePage() {
               <span className="nm">
                 <Link
                   className="scalerow__link"
-                  href="/work?scale=platforms"
+                  href="/platforms"
                   aria-label="See Platforms work"
                 >
                   Platforms
@@ -120,11 +143,11 @@ export default function HomePage() {
                 operate to last.
               </span>
               <span className="ex">
-                <Link href="/work/mode-festival">MODE</Link>
+                <Link href="/platforms/mode-festival">MODE</Link>
                 <br />
-                <Link href="/work/tenderfest">TenderFest</Link>
+                <Link href="/platforms/tenderfest">TenderFest</Link>
                 <br />
-                <Link href="/work/camp">CAMP</Link>
+                <Link href="/platforms/camp">CAMP</Link>
               </span>
             </div>
             <div className="scalerow scalerow--link" data-reveal>
@@ -132,7 +155,7 @@ export default function HomePage() {
               <span className="nm">
                 <Link
                   className="scalerow__link"
-                  href="/work?scale=venues"
+                  href="/venues"
                   aria-label="See Venues work"
                 >
                   Venues
@@ -143,7 +166,7 @@ export default function HomePage() {
                 it, so every night delivers for years.
               </span>
               <span className="ex">
-                <Link href="/work/riot-games-arena">Riot Games Arena</Link>
+                <Link href="/venues/riot-games-arena">Riot Games Arena</Link>
               </span>
             </div>
           </div>

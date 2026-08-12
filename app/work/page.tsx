@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { Header } from "@/components/Header";
 import { MobileNav } from "@/components/MobileNav";
 import { Footer } from "@/components/Footer";
@@ -9,6 +8,13 @@ import { projects } from "@/data/projects";
 export const metadata: Metadata = {
   title: "Work",
   description: "Selected work across Moments, Platforms, and Venues.",
+  alternates: { canonical: "/work" },
+  openGraph: {
+    title: "Work · PHNTM",
+    description: "Selected work across Moments, Platforms, and Venues.",
+    url: "/work",
+    type: "website",
+  },
 };
 
 export default function WorkPage() {
@@ -40,9 +46,7 @@ export default function WorkPage() {
           className="wrap"
           style={{ paddingBottom: "clamp(36px,5vw,72px)" }}
         >
-          <Suspense fallback={null}>
-            <WorkFilter projects={projects} />
-          </Suspense>
+          <WorkFilter projects={projects} />
         </section>
       </main>
       <Footer />

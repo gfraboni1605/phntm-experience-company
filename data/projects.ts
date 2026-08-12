@@ -173,7 +173,7 @@ export type Project = {
   heroImagePosition?: string; // CSS object-position
   outcome?: string;
   did?: DidRow[];
-  /** When present, /work/[slug] renders the rich case-study layout */
+  /** When present, /{scale}/[slug] renders the rich case-study layout */
   caseStudy?: CaseStudy;
 };
 
@@ -3187,4 +3187,8 @@ export function nextProject(slug: string): Project {
   const i = projects.findIndex((p) => p.slug === slug);
   if (i === -1) return projects[0];
   return projects[(i + 1) % projects.length];
+}
+
+export function projectsForScale(scale: Scale): Project[] {
+  return projects.filter((p) => p.scale === scale);
 }

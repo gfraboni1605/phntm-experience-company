@@ -7,6 +7,13 @@ import { Footer } from "@/components/Footer";
 export const metadata: Metadata = {
   title: "Contact",
   description: "Tell us what you're working on. hello@phntm.com",
+  alternates: { canonical: "/contact" },
+  openGraph: {
+    title: "Contact · PHNTM",
+    description: "Tell us what you're working on. hello@phntm.com",
+    url: "/contact",
+    type: "website",
+  },
 };
 
 const ICONS = [

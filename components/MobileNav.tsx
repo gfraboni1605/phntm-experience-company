@@ -24,9 +24,9 @@ export function MobileNav({ variant = "default" }: { variant?: "default" | "dark
         </button>
       </div>
       <nav className="mobile-nav__links">
-        <Link href="/work?scale=moments">Moments</Link>
-        <Link href="/work?scale=platforms">Platforms</Link>
-        <Link href="/work?scale=venues">Venues</Link>
+        <Link href="/moments">Moments</Link>
+        <Link href="/platforms">Platforms</Link>
+        <Link href="/venues">Venues</Link>
         <Link href="/about">About</Link>
         <Link href="/contact">Contact</Link>
       </nav>

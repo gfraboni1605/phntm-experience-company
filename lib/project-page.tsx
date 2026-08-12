@@ -5,53 +5,149 @@ import { Header } from "@/components/Header";
 import { MobileNav } from "@/components/MobileNav";
 import { Footer } from "@/components/Footer";
 import { CaseStudy } from "@/components/CaseStudy";
-import { nextProject, projects, projectsBySlug } from "@/data/projects";
+import { JsonLd } from "@/components/JsonLd";
+import {
+  nextProject,
+  projectsBySlug,
+  projectsForScale,
+  type Project,
+  type Scale,
+} from "@/data/projects";
+import {
+  SCALE_LABEL,
+  absoluteUrl,
+  projectPath,
+  scalePath,
+} from "@/lib/paths";
 
-const SCALE_LABEL = {
-  moments: "Moments",
-  platforms: "Platforms",
-  venues: "Venues",
-} as const;
-
-export function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+export function generateScaleStaticParams(scale: Scale) {
+  return projectsForScale(scale).map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateProjectMetadata(
+  scale: Scale,
+  slug: string
+): Promise<Metadata> {
   const p = projectsBySlug[slug];
-  if (!p) return { title: "Work" };
+  if (!p || p.scale !== scale) {
+    return { title: SCALE_LABEL[scale] };
+  }
+
+  const description = p.outcome ?? `${p.name} · ${p.scope}`;
+  const path = projectPath(p);
+  const title = `${p.name} · ${SCALE_LABEL[p.scale]}`;
+
   return {
-    title: p.name,
-    description: p.outcome ?? `${p.name} · ${p.scope}`,
+    title,
+    description,
+    alternates: { canonical: path },
     openGraph: {
       title: `${p.name} · PHNTM`,
-      description: p.outcome ?? `${p.name} · ${p.scope}`,
-      ...(p.heroImage ? { images: [{ url: p.heroImage }] } : {}),
+      description,
+      url: path,
+      type: "article",
+      siteName: "PHNTM",
+      ...(p.heroImage ? { images: [{ url: p.heroImage, alt: p.heroImageAlt ?? p.name }] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${p.name} · PHNTM`,
+      description,
+      ...(p.heroImage ? { images: [p.heroImage] } : {}),
     },
   };
 }
 
-export default async function WorkDetailPage({
-  params,
+function projectJsonLd(project: Project, next: Project) {
+  const url = absoluteUrl(projectPath(project));
+  const scaleUrl = absoluteUrl(scalePath(project.scale));
+  const description = project.outcome ?? `${project.name} · ${project.scope}`;
+
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: absoluteUrl("/"),
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: SCALE_LABEL[project.scale],
+          item: scaleUrl,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: project.name,
+          item: url,
+        },
+      ],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      name: project.name,
+      description,
+      url,
+      dateCreated: project.year,
+      creator: {
+        "@type": "Organization",
+        name: "PHNTM",
+        url: absoluteUrl("/"),
+      },
+      ...(project.client
+        ? {
+            about: {
+              "@type": "Organization",
+              name: project.client,
+            },
+          }
+        : {}),
+      ...(project.heroImage
+        ? { image: absoluteUrl(project.heroImage) }
+        : {}),
+      ...(project.venue
+        ? {
+            locationCreated: {
+              "@type": "Place",
+              name: project.venue,
+            },
+          }
+        : {}),
+      isPartOf: {
+        "@type": "CollectionPage",
+        name: SCALE_LABEL[project.scale],
+        url: scaleUrl,
+      },
+      relatedLink: absoluteUrl(projectPath(next)),
+    },
+  ];
+}
+
+export async function ProjectDetailPage({
+  scale,
+  slug,
 }: {
-  params: Promise<{ slug: string }>;
+  scale: Scale;
+  slug: string;
 }) {
-  const { slug } = await params;
   const p = projectsBySlug[slug];
-  if (!p) notFound();
+  if (!p || p.scale !== scale) notFound();
 
   const next = nextProject(slug);
   const did = p.did ?? [];
+  const backHref = scalePath(p.scale);
+  const backLabel = `← ${SCALE_LABEL[p.scale]}`;
 
-  // If this project has full case-study content, render the rich layout.
   if (p.caseStudy) {
     return (
       <>
+        <JsonLd data={projectJsonLd(p, next)} />
         <Header />
         <MobileNav />
         <CaseStudy project={p} caseStudy={p.caseStudy} next={next} />
@@ -62,12 +158,13 @@ export default async function WorkDetailPage({
 
   return (
     <>
+      <JsonLd data={projectJsonLd(p, next)} />
       <Header />
       <MobileNav />
       <main>
         <section className="wrap section--tight">
-          <Link className="wd-back" href="/work">
-            ← All work
+          <Link className="wd-back" href={backHref}>
+            {backLabel}
           </Link>
 
           <div className="wd-hero" data-variant="a">
@@ -118,14 +215,22 @@ export default async function WorkDetailPage({
             >
               {p.heroImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.heroImage} alt={p.heroImageAlt ?? ""} loading="lazy" decoding="async" />
+                <img
+                  src={p.heroImage}
+                  alt={p.heroImageAlt ?? ""}
+                  loading="lazy"
+                  decoding="async"
+                />
               ) : (
                 <div className="media__ph">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     className="reg"
                     src="/brand/registration-ink.svg"
-                    alt="" loading="lazy" decoding="async" />
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div className="t">
                     <b>{p.name}</b>
                   </div>
@@ -184,7 +289,10 @@ export default async function WorkDetailPage({
                   <img
                     className="reg"
                     src="/brand/registration-ink.svg"
-                    alt="" loading="lazy" decoding="async" />
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div className="t">
                     <b>{["Wide", "Detail", "Crowd"][i]}</b>,{" "}
                     {["full frame", "content", "the room"][i]}
@@ -203,7 +311,7 @@ export default async function WorkDetailPage({
           style={{ paddingBottom: "clamp(36px,5vw,72px)" }}
         >
           <div className="wd-next">
-            <Link href={`/work/${next.slug}`} data-reveal>
+            <Link href={projectPath(next)} data-reveal>
               <div className="lbl">Next project</div>
               <div className="wd-next__proj">
                 {next.name} <span className="arw">→</span>
@@ -211,20 +319,28 @@ export default async function WorkDetailPage({
             </Link>
             <Link
               className="wd-next__media media"
-              href={`/work/${next.slug}`}
+              href={projectPath(next)}
               data-reveal
               data-reveal-d="1"
             >
               {next.heroImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={next.heroImage} alt={next.heroImageAlt ?? ""} loading="lazy" decoding="async" />
+                <img
+                  src={next.heroImage}
+                  alt={next.heroImageAlt ?? ""}
+                  loading="lazy"
+                  decoding="async"
+                />
               ) : (
                 <div className="media__ph">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     className="reg"
                     src="/brand/registration-ink.svg"
-                    alt="" loading="lazy" decoding="async" />
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div className="t">
                     <b>{next.name}</b>
                   </div>
@@ -233,12 +349,10 @@ export default async function WorkDetailPage({
               <span className="media__tag">{SCALE_LABEL[next.scale]}</span>
             </Link>
           </div>
-          <div
-            style={{ marginTop: "clamp(28px,4vw,44px)" }}
-            data-reveal
-          >
-            <Link className="alink" href="/work">
-              See all work <span className="arw">→</span>
+          <div style={{ marginTop: "clamp(28px,4vw,44px)" }} data-reveal>
+            <Link className="alink" href={backHref}>
+              See all {SCALE_LABEL[p.scale].toLowerCase()}{" "}
+              <span className="arw">→</span>
             </Link>
           </div>
         </section>
