@@ -2,7 +2,9 @@
 
 Marketing site for [PHNTM](https://www.phntm.com) — an experience company that designs, builds, and runs live moments, platforms, and venues.
 
-Built with **Next.js** (App Router), **React**, and **TypeScript**. Deployed on Vercel.
+Built with **Next.js** (App Router), **React**, and **TypeScript**. Deployed on Vercel via this GitHub repo.
+
+For coding agents (Claude, Cursor, etc.), see **[AGENTS.md](AGENTS.md)**.
 
 ## Routes
 
