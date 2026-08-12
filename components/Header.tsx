@@ -15,9 +15,9 @@ export function Header({ variant = "default" }: { variant?: Variant }) {
           <img src={logo} alt="PHNTM" />
         </Link>
         <nav className="site-nav">
-          <Link href="/work?scale=moments">Moments</Link>
-          <Link className="muted" href="/work?scale=platforms">Platforms</Link>
-          <Link className="muted" href="/work?scale=venues">Venues</Link>
+          <Link href="/moments">Moments</Link>
+          <Link className="muted" href="/platforms">Platforms</Link>
+          <Link className="muted" href="/venues">Venues</Link>
           <Link className="muted" href="/about">About</Link>
         </nav>
         <div className="head-tools">

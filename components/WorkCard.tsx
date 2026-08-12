@@ -1,11 +1,6 @@
 import Link from "next/link";
 import type { Project } from "@/data/projects";
-
-const SCALE_LABEL: Record<Project["scale"], string> = {
-  moments: "Moments",
-  platforms: "Platforms",
-  venues: "Venues",
-};
+import { SCALE_LABEL, projectPath } from "@/lib/paths";
 
 export function WorkCard({
   project,
@@ -21,7 +16,7 @@ export function WorkCard({
   return (
     <Link
       className="work-card"
-      href={`/work/${project.slug}`}
+      href={projectPath(project)}
       data-scale={project.scale}
       data-reveal
       data-reveal-d={delay ? String(delay) : undefined}

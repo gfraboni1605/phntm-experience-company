@@ -8,12 +8,7 @@ import type {
   ProseParagraph,
   ProseRun,
 } from "@/data/projects";
-
-const SCALE_LABEL = {
-  moments: "Moments",
-  platforms: "Platforms",
-  venues: "Venues",
-} as const;
+import { SCALE_LABEL, projectPath, scalePath } from "@/lib/paths";
 
 function defaultMeta(project: Project): CaseStudyMetaItem[] {
   const items: CaseStudyMetaItem[] = [
@@ -67,8 +62,8 @@ export function CaseStudy({
     <main>
       {/* HEAD */}
       <section className="wrap cs-head section--tight">
-        <Link className="cs-back" href="/work">
-          ← All work
+        <Link className="cs-back" href={scalePath(project.scale)}>
+          ← {SCALE_LABEL[project.scale]}
         </Link>
         <div className="eyebrow cs-head__eyebrow" data-reveal>
           <span>{SCALE_LABEL[project.scale]}</span>
@@ -465,7 +460,7 @@ export function CaseStudy({
         style={{ paddingBottom: "clamp(36px,5vw,72px)" }}
       >
         <div className="wd-next">
-          <Link href={`/work/${next.slug}`} data-reveal>
+          <Link href={projectPath(next)} data-reveal>
             <div className="lbl">Next project</div>
             <div className="wd-next__proj">
               {next.name} <span className="arw">→</span>
@@ -473,7 +468,7 @@ export function CaseStudy({
           </Link>
           <Link
             className="wd-next__media media"
-            href={`/work/${next.slug}`}
+            href={projectPath(next)}
             data-reveal
             data-reveal-d="1"
           >
@@ -496,8 +491,9 @@ export function CaseStudy({
           </Link>
         </div>
         <div style={{ marginTop: "clamp(28px,4vw,44px)" }} data-reveal>
-          <Link className="alink" href="/work">
-            See all work <span className="arw">→</span>
+          <Link className="alink" href={scalePath(project.scale)}>
+            See all {SCALE_LABEL[project.scale].toLowerCase()}{" "}
+            <span className="arw">→</span>
           </Link>
         </div>
       </section>

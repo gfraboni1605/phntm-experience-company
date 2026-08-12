@@ -174,10 +174,17 @@ p { margin: 0; text-wrap: pretty; }
   font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
   border-radius: var(--r-pill); padding: 7px 12px; border: 1px solid var(--hair); color: var(--ink-2);
   background: transparent; cursor: pointer; white-space: nowrap;
+  text-decoration: none; display: inline-flex; align-items: center;
   transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 .chip:hover { border-color: var(--ink); }
-.chip[aria-pressed="true"], .chip.is-active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.chip[aria-pressed="true"],
+.chip[aria-current="page"],
+.chip.is-active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
 
 /* MEDIA */
 .media {
