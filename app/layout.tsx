@@ -6,6 +6,8 @@ import { SiteEffects } from "@/components/SiteEffects";
 import { Preloader } from "@/components/Preloader";
 import { PageTransition } from "@/components/PageTransition";
 import { JsonLd } from "@/components/JsonLd";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { GA_MEASUREMENT_ID, isGaEnabled } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/paths";
 
 const SITE_DESCRIPTION =
@@ -70,6 +72,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className="reveal-ready" suppressHydrationWarning>
       <body suppressHydrationWarning>
         <JsonLd data={[organizationJsonLd, websiteJsonLd]} />
+        {isGaEnabled() ? (
+          <Suspense fallback={null}>
+            <GoogleAnalytics measurementId={GA_MEASUREMENT_ID} />
+          </Suspense>
+        ) : null}
         <Preloader />
         {children}
         <Suspense fallback={null}>
