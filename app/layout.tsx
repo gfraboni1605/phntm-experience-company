@@ -6,6 +6,7 @@ import { SiteEffects } from "@/components/SiteEffects";
 import { Preloader } from "@/components/Preloader";
 import { PageTransition } from "@/components/PageTransition";
 import { JsonLd } from "@/components/JsonLd";
+import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { GA_MEASUREMENT_ID, isGaEnabled } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/paths";
@@ -85,6 +86,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Suspense fallback={null}>
           <PageTransition />
         </Suspense>
+        <Analytics />
       </body>
     </html>
   );
